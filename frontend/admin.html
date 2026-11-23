@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookRental - Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-book-open"></i>
+            <span>BookRental</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i><span>Dashboard</span>
+            </a>
+            <a href="books.html" class="nav-item">
+                <i class="fas fa-book-open"></i><span>Browse Books</span>
+            </a>
+            <a href="my-rentals.html" class="nav-item">
+                <i class="fas fa-bookmark"></i><span>My Rentals</span>
+            </a>
+            <a href="admin.html" class="nav-item active admin-only">
+                <i class="fas fa-cog"></i><span>Admin Panel</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info" id="sidebarUser"></div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <h1 class="page-title">Admin Panel</h1>
+            <div class="top-bar-right">
+                <button class="btn-primary" onclick="openAddBookModal()">
+                    <i class="fas fa-plus"></i> Add Book
+                </button>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <!-- Admin Stats -->
+            <div class="stats-grid" style="margin-bottom:24px">
+                <div class="stat-card stat-blue">
+                    <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="stat-info"><h3 id="statTotalBooks">—</h3><p>Total Books</p></div>
+                </div>
+                <div class="stat-card stat-green">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info"><h3 id="statTotalUsers">—</h3><p>Total Users</p></div>
+                </div>
+                <div class="stat-card stat-orange">
+                    <div class="stat-icon"><i class="fas fa-bookmark"></i></div>
+                    <div class="stat-info"><h3 id="statActiveRentals">—</h3><p>Active Rentals</p></div>
+                </div>
+                <div class="stat-card stat-red">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-info"><h3 id="statOverdue">—</h3><p>Overdue</p></div>
+                </div>
+            </div>
+            <div class="section" style="margin-bottom:24px;padding:16px 24px">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <i class="fas fa-dollar-sign" style="font-size:20px;color:var(--success)"></i>
+                    <div>
+                        <div style="font-size:13px;color:var(--gray)">Total Revenue</div>
+                        <div style="font-size:24px;font-weight:700;color:var(--success)" id="statRevenue">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showAdminTab('books', this)">
+                    <i class="fas fa-book-open"></i> Manage Books
+                </button>
+                <button class="admin-tab" onclick="showAdminTab('rentals', this)">
+                    <i class="fas fa-list"></i> All Rentals
+                </button>
+            </div>
+
+            <!-- Books Management -->
+            <div id="admin-books" class="admin-section">
+                <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+                    <div class="search-input-wrap" style="flex:1;min-width:200px">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search books..." oninput="searchAdminBooks(this.value)">
+                    </div>
+                    <button class="btn-primary" onclick="openAddBookModal()">
+                        <i class="fas fa-plus"></i> Add Book
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Cover</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Genre</th>
+                                <th>Price/Day</th>
+                                <th>Copies</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminBooksTable">
+                            <tr><td colspan="8" class="text-center"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- All Rentals -->
+            <div id="admin-rentals" class="admin-section hidden">
+                <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+                    <div class="search-input-wrap" style="flex:1;min-width:200px">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search by user or book..." oninput="searchAdminRentals(this.value)">
+                    </div>
+                    <select class="form-control" style="width:auto" onchange="filterAdminRentals(this.value)">
+                        <option value="all">All Status</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="RETURNED">Returned</option>
+                        <option value="OVERDUE">Overdue</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Book</th>
+                                <th>Rental Date</th>
+                                <th>Due Date</th>
+                                <th>Return Date</th>
+                                <th>Status</th>
+                                <th>Cost</th>
+                                <th>Late Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminRentalsTable">
+                            <tr><td colspan="8" class="text-center">Click "All Rentals" tab to load</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Book Modal -->
+    <div class="modal-overlay hidden" id="bookModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 id="bookModalTitle">Add New Book</h3>
+                <button onclick="closeBookModal()" class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="bookModalAlert" class="alert hidden"></div>
+                <form id="bookForm" onsubmit="return false">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Title <span style="color:var(--danger)">*</span></label>
+                            <input type="text" id="bookTitle" required class="form-control" placeholder="Book title">
+                        </div>
+                        <div class="form-group">
+                            <label>Author <span style="color:var(--danger)">*</span></label>
+                            <input type="text" id="bookAuthor" required class="form-control" placeholder="Author name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ISBN</label>
+                            <input type="text" id="bookIsbn" class="form-control" placeholder="978-...">
+                        </div>
+                        <div class="form-group">
+                            <label>Genre</label>
+                            <input type="text" id="bookGenre" class="form-control" placeholder="e.g. Fiction, Fantasy">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="bookDescription" rows="3" class="form-control" placeholder="Brief description..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Cover Image URL</label>
+                        <input type="url" id="bookCover" class="form-control" placeholder="https://..." oninput="previewCover(this.value)">
+                        <img id="coverPreview" style="display:none;margin-top:8px;width:60px;height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--border)" alt="Cover preview">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rental Price/Day ($) <span style="color:var(--danger)">*</span></label>
+                            <input type="number" id="bookPrice" step="0.01" min="0.01" required class="form-control" placeholder="1.50">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Copies <span style="color:var(--danger)">*</span></label>
+                            <input type="number" id="bookCopies" min="1" value="1" required class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeBookModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveBook()" id="saveBookBtn">
+                    <i class="fas fa-save"></i> Save Book
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

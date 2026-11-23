@@ -1,0 +1,11 @@
+{
+  "name": "bookrental-frontend",
+  "version": "1.0.0",
+  "description": "Book Rental System Frontend",
+  "scripts": {
+    "start": "npx serve . -p 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

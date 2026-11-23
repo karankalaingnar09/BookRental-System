@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookRental - My Rentals</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-book-open"></i>
+            <span>BookRental</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i><span>Dashboard</span>
+            </a>
+            <a href="books.html" class="nav-item">
+                <i class="fas fa-book-open"></i><span>Browse Books</span>
+            </a>
+            <a href="my-rentals.html" class="nav-item active">
+                <i class="fas fa-bookmark"></i><span>My Rentals</span>
+            </a>
+            <a href="admin.html" class="nav-item admin-only hidden">
+                <i class="fas fa-cog"></i><span>Admin Panel</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info" id="sidebarUser"></div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <h1 class="page-title">My Rentals</h1>
+            <div class="top-bar-right">
+                <a href="books.html" class="btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Rent a Book
+                </a>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="rental-tabs">
+                <button class="rental-tab active" onclick="filterRentals('all', this)">All</button>
+                <button class="rental-tab" onclick="filterRentals('ACTIVE', this)">Active</button>
+                <button class="rental-tab" onclick="filterRentals('RETURNED', this)">Returned</button>
+                <button class="rental-tab" onclick="filterRentals('OVERDUE', this)">Overdue</button>
+            </div>
+
+            <div id="rentalsContainer">
+                <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/rentals.js"></script>
+</body>
+</html>
